@@ -7,12 +7,13 @@ import { computed } from 'vue';
 import { useFullscreen, useToggle } from '@vueuse/core';
 
 
-const { headerHeight, sideMenuCollapsed } = storeToRefs(useThemeStore());
+const { headerHeight, sideMenuCollapsed, darkMode } = storeToRefs(useThemeStore());
 const height = computed(() => {
   return `${headerHeight.value}px`;
 });
 const sideMenuCollapsedToggle = useToggle(sideMenuCollapsed);
 const { isFullscreen, toggle } = useFullscreen();
+const darkModeToggle = useToggle(darkMode);
 </script>
 
 <template>
@@ -30,6 +31,12 @@ const { isFullscreen, toggle } = useFullscreen();
           <template v-slot:icon>
             <icon v-if="isFullscreen" icon="material-symbols:fullscreen-exit" />
             <icon v-else icon="material-symbols:fullscreen" />
+          </template>
+        </n-button>
+        <n-button @click="darkModeToggle()" quaternary :focusable="false">
+          <template v-slot:icon>
+            <icon v-if="darkMode" icon="material-symbols:dark-mode-outline" />
+            <icon v-else icon="material-symbols:light-mode-outline" />
           </template>
         </n-button>
         <n-button quaternary :focusable="false">

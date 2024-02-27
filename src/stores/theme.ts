@@ -9,6 +9,7 @@ export const useThemeStore = defineStore('todo-theme', () => {
   const sideMenuCollapsedWidth = ref(64);
   const sideMenuCollapsed = ref(false);
   const fullScreen = ref(false);
+  const darkMode = ref(false);
   return {
     headerHeight,
     footerHeight,
@@ -16,7 +17,8 @@ export const useThemeStore = defineStore('todo-theme', () => {
     sideMenuWidth,
     sideMenuCollapsedWidth,
     sideMenuCollapsed,
-    fullScreen
+    fullScreen,
+    darkMode
   };
 }, {
   persist: {

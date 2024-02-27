@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { NConfigProvider } from 'naive-ui';
+import { darkTheme, NConfigProvider } from 'naive-ui';
+import { useThemeStore } from '@/stores/theme';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+
+const { darkMode } = storeToRefs(useThemeStore());
+const theme = computed(() => {
+  return darkMode.value ? darkTheme : undefined;
+});
 </script>
 
 <template>
-  <n-config-provider>
+  <n-config-provider :theme="theme">
     <router-view />
   </n-config-provider>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style scoped></style>
