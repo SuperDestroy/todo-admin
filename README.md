@@ -1,6 +1,6 @@
 # todo-admin
 
-This template should help get you started developing with Vue 3 in Vite.
+基于Vue3, Typesciprt, Pinia, Naive UI 后台管理界面
 
 ## Recommended IDE Setup
 
