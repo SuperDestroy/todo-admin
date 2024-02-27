@@ -16,6 +16,8 @@
     "@icon-park/vue-next": "^1.4.2",
     "@vueuse/core": "^10.8.0",
     "axios": "^1.6.7",
+    "echarts": "^5.5.0",
+    "echarts-wordcloud": "^2.1.0",
     "nanoid": "^5.0.6",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",

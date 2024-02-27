@@ -4,8 +4,11 @@ import { computed, ref } from 'vue';
 import { useThemeStore } from '@/stores/theme';
 import { storeToRefs } from 'pinia';
 
-const { headerHeight, footerHeight, showFooter } = storeToRefs(useThemeStore());
+const { headerHeight, footerHeight, showFooter, darkMode } = storeToRefs(useThemeStore());
 const contentRef = ref();
+const darkModeBg = computed(() => {
+  return !darkMode.value;
+});
 
 const height = computed(() => {
   return `calc(100vh - ${headerHeight.value}px - ${showFooter.value ? footerHeight.value : 0}px)`;
@@ -14,8 +17,9 @@ const height = computed(() => {
 </script>
 
 <template>
-  <n-layout-content ref="contentRef" class="content bg-gray-1" content-style="padding: 10px;">
-    Content1
+  <n-layout-content ref="contentRef" class="content" :class="{ 'bg-gray-100': darkModeBg }"
+                    content-style="padding: 10px;">
+    <router-view />
   </n-layout-content>
 </template>
 

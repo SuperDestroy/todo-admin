@@ -10,6 +10,9 @@ const router = createRouter({
         {
           path: '',
           component: () => import('@/views/HomeView.vue')
+        }, {
+          path: 'ordinary-table',
+          component: () => import('@/views/table/OrdinaryTable.vue')
         }]
     }
   ]

@@ -6,6 +6,7 @@ import MenuSideLogo from '@/layouts/components/MenuSideLogo.vue';
 import { computed, h } from 'vue';
 import { nanoid } from 'nanoid';
 import { Icon } from '@iconify/vue';
+import { RouterLink } from 'vue-router';
 
 const { sideMenuWidth, sideMenuCollapsed, headerHeight, sideMenuCollapsedWidth } = storeToRefs(useThemeStore());
 const menuOptions: MenuOption[] = [{
@@ -14,27 +15,14 @@ const menuOptions: MenuOption[] = [{
   children: undefined
 }, {
   key: nanoid(),
-  label: '菜单2',
-  children: undefined
-}, {
-  key: nanoid(),
-  label: '系统管理',
-  iconString: 'mdi:settings',
+  label: '列表',
+  iconString: 'material-symbols:table-chart',
   children: [{
     key: nanoid(),
-    label: '用户管理',
-    children: undefined,
-    iconString: 'mdi:settings'
-  }, {
-    key: nanoid(),
-    label: '角色管理',
-    children: undefined,
-    iconString: 'mdi:settings'
-  }, {
-    key: nanoid(),
-    label: '菜单管理',
-    children: undefined,
-    iconString: 'mdi:settings'
+    label: '普通列表',
+    to: '/ordinary-table',
+    iconString: 'material-symbols:table-chart',
+    children: undefined
   }]
 }, {
   key: nanoid(),
@@ -85,11 +73,11 @@ const renderMenuIcon = (option: MenuOption) => {
   return h(NIcon, null, () => h(Icon, { icon: iconString }));
 };
 const renderMenuLabel = (option: MenuOption) => {
-  if ('href' in option) {
+  if ('to' in option) {
     return h(
-      'a',
-      { href: option.href, target: '_blank' },
-      option.label as string
+      RouterLink,
+      { to: option['to'] as string, class: 'menu-item-label' },
+      () => option.label as string
     );
   }
   return h('span', {
@@ -120,5 +108,9 @@ const renderMenuLabel = (option: MenuOption) => {
   </n-layout-sider>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.menu-item-label {
+  font-weight: 500;
+  font-size: 1em
+}
 </style>
