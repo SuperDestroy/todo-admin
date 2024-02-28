@@ -20,6 +20,15 @@ const router = createRouter({
           path: 'tree-table',
           component: () => import('@/views/table/TreeTable.vue')
         }]
+    }, {
+      path: '/403',
+      component: () => import('@/views/error/Error403.vue')
+    }, {
+      path: '/404',
+      component: () => import('@/views/error/Error404.vue')
+    }, {
+      path: '/500',
+      component: () => import('@/views/error/Error500.vue')
     }
   ]
 });

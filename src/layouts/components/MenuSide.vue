@@ -17,6 +17,29 @@ const menuOptions: MenuOption[] = [{
   children: undefined
 }, {
   key: nanoid(),
+  label: '异常页',
+  iconString: 'carbon:data-error',
+  children: [{
+    key: nanoid(),
+    label: '403',
+    to: '/403',
+    iconString: 'carbon:data-error',
+    children: undefined
+  }, {
+    key: nanoid(),
+    label: '404',
+    to: '/404',
+    iconString: 'carbon:data-error',
+    children: undefined
+  }, {
+    key: nanoid(),
+    label: '500',
+    to: '/500',
+    iconString: 'carbon:data-error',
+    children: undefined
+  }]
+}, {
+  key: nanoid(),
   label: '列表',
   iconString: 'material-symbols:table-chart',
   children: [{
