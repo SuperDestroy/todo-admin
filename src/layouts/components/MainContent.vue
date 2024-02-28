@@ -17,7 +17,7 @@ const height = computed(() => {
 </script>
 
 <template>
-  <n-layout-content ref="contentRef" class="content" :class="{ 'bg-gray-100': darkModeBg }"
+  <n-layout-content ref="contentRef" class="content" :class="{ 'bg-slate-50': darkModeBg }"
                     content-style="padding: 10px;">
     <router-view />
   </n-layout-content>

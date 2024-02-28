@@ -13,6 +13,12 @@ const router = createRouter({
         }, {
           path: 'ordinary-table',
           component: () => import('@/views/table/OrdinaryTable.vue')
+        }, {
+          path: 'data-table',
+          component: () => import('@/views/table/DataTable.vue')
+        }, {
+          path: 'tree-table',
+          component: () => import('@/views/table/TreeTable.vue')
         }]
     }
   ]

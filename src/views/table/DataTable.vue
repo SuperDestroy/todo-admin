@@ -1,35 +1,42 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 
+const columns = [
+  {
+    title: 'Name',
+    key: 'name'
+  },
+  {
+    title: 'Age',
+    key: 'age'
+  },
+  {
+    title: 'Address',
+    key: 'address'
+  }
+];
+
+const data = ref(Array.from({ length: 46 }).map((_, index) => ({
+  key: index,
+  name: `Edward King ${index}`,
+  age: 32,
+  address: `London, Park Lane no. ${index}`
+})));
+
+const pagination = {
+  pageSize: 15
+};
 </script>
 
 <template>
-  <n-table>
-    <thead>
-    <tr>
-      <th>Abandon</th>
-      <th>Abnormal</th>
-      <th>Abolish</th>
-      <th>...</th>
-      <th>万事开头难</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>放弃</td>
-      <td>反常的</td>
-      <td>彻底废除</td>
-      <td>...</td>
-      <td>干！我刚才背的是啥</td>
-    </tr>
-    <tr>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    </tbody>
-  </n-table>
+  <n-flex vertical>
+    <n-data-table
+      :columns="columns"
+      :data="data"
+      :pagination="pagination"
+      :max-height="250"
+    />
+  </n-flex>
 </template>
 
 <style scoped lang="scss">

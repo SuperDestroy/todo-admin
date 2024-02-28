@@ -11,7 +11,9 @@ import { RouterLink } from 'vue-router';
 const { sideMenuWidth, sideMenuCollapsed, headerHeight, sideMenuCollapsedWidth } = storeToRefs(useThemeStore());
 const menuOptions: MenuOption[] = [{
   key: nanoid(),
-  label: '菜单1',
+  label: '首页',
+  iconString: 'carbon:home',
+  to: '/',
   children: undefined
 }, {
   key: nanoid(),
@@ -21,6 +23,18 @@ const menuOptions: MenuOption[] = [{
     key: nanoid(),
     label: '普通列表',
     to: '/ordinary-table',
+    iconString: 'material-symbols:table-chart',
+    children: undefined
+  }, {
+    key: nanoid(),
+    label: '数据列表',
+    to: '/data-table',
+    iconString: 'material-symbols:table-chart',
+    children: undefined
+  }, {
+    key: nanoid(),
+    label: '树形列表',
+    to: '/tree-table',
     iconString: 'material-symbols:table-chart',
     children: undefined
   }]
