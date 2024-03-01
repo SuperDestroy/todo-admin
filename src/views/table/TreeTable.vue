@@ -55,11 +55,13 @@ const rowKey = ((row: RowData) => {
 
 </script>
 <template>
-  <n-data-table
-    :columns="columns"
-    :data="data"
-    :row-key="rowKey"
-    default-expand-all
-  />
+  <div>
+    <n-data-table
+      :columns="columns"
+      :data="data"
+      :row-key="rowKey"
+      default-expand-all
+    />
+  </div>
 </template>
 

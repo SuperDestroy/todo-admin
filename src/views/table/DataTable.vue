@@ -29,15 +29,14 @@ const pagination = {
 </script>
 
 <template>
-  <n-flex vertical>
-    <n-data-table
-      :columns="columns"
-      :data="data"
-      :pagination="pagination"
-      :max-height="250"
-    />
-  </n-flex>
+  <div>
+    <n-flex vertical>
+      <n-data-table
+        :columns="columns"
+        :data="data"
+        :pagination="pagination"
+        :max-height="250"
+      />
+    </n-flex>
+  </div>
 </template>
-
-<style scoped lang="scss">
-</style>

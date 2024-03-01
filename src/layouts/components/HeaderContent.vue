@@ -18,7 +18,7 @@ const darkModeToggle = useToggle(darkMode);
 
 <template>
   <n-layout-header bordered class="header">
-    <n-flex class="h-full" align="center" justify="space-evenly">
+    <n-flex align="center" justify="space-evenly" class="h-full">
       <n-button @click="sideMenuCollapsedToggle()" quaternary :focusable="false">
         <template v-slot:icon>
           <icon v-if="sideMenuCollapsed" icon="material-symbols:format-indent-increase" />

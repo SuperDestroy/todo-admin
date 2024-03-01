@@ -6,8 +6,9 @@ import FooterContent from '@/layouts/components/FooterContent.vue';
 import HeaderContent from '@/layouts/components/HeaderContent.vue';
 import { useThemeStore } from '@/stores/theme';
 import { storeToRefs } from 'pinia';
+import TagsView from '@/layouts/components/TagsView.vue';
 
-const { showFooter } = storeToRefs(useThemeStore());
+const { showFooter, showTagsView } = storeToRefs(useThemeStore());
 </script>
 
 <template>
@@ -15,11 +16,9 @@ const { showFooter } = storeToRefs(useThemeStore());
     <menu-side />
     <n-layout>
       <header-content />
+      <tags-view v-if="showTagsView" />
       <main-content />
       <footer-content v-if="showFooter" />
     </n-layout>
   </n-layout>
 </template>
-
-<style lang="scss" scoped>
-</style>
