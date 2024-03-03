@@ -10,7 +10,7 @@ const back = () => {
 <template>
   <n-layout>
     <n-layout-content>
-      <n-flex justify="center" align="center" h-100vh w-100vw>
+      <n-flex justify="center" align="center" h-full w-full>
         <n-result
           status="403"
           title="403 禁止访问"

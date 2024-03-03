@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useResizeObserver } from '@vueuse/core';
 import { VueDraggable } from 'vue-draggable-plus';
 import { cloneDeep } from 'lodash';
 import { useThemeStore } from '@/stores/theme';
 import { storeToRefs } from 'pinia';
+import { useAppDataStore } from '@/stores/appData';
+import { useRouter } from 'vue-router';
 
 const container = ref();
 const overflow = ref(false);
 const { tagsViewHeight } = storeToRefs(useThemeStore());
+const appDataStore = useAppDataStore();
+const { tags, activeTag } = storeToRefs(appDataStore);
+const { removeTag, checkTag } = appDataStore;
+const router = useRouter();
 
 const height = computed(() => {
   return `${tagsViewHeight.value}px`;
@@ -24,7 +30,24 @@ const updateOverflow = () => {
   }
 };
 
+const init = () => {
+  if (container.value != null) {
+    if (tags.value.length == 0) {
+      tags.value.push({
+        key: '0',
+        label: '首页',
+        to: '/',
+        checked: true,
+        default: true,
+        closeable: false
+      });
+      checkTag(tags.value[0]);
+    }
+  }
+};
+
 onMounted(() => {
+  init();
   updateOverflow();
 });
 
@@ -32,25 +55,28 @@ useResizeObserver(container, () => {
   updateOverflow();
 });
 
-const tags = ref(Array.from({ length: 46 }).map((_, index) => ({
-  key: index,
-  name: `Tab ${index}`,
-  to: `to ${index}`,
-  checked: ref(false)
-})));
-
-const closeTag = () => {
-  console.log('close tag');
+const closeTag = (item: any) => {
+  removeTag(item);
 };
 
 const clickTag = (item: any) => {
-  // 判断位置是否合适做移动
+  checkTag(item);
   moveTag(item);
-  tags.value.forEach(item => {
-    item.checked = false;
-  });
-  item.checked = true;
 };
+
+watch(tags.value, () => {
+  nextTick(() => {
+    updateOverflow();
+  });
+});
+
+watch(activeTag, (value: TagModel) => {
+  if (value.to.length > 0 && value.to != router.currentRoute.value.fullPath) {
+    router.push({
+      path: value.to
+    });
+  }
+});
 
 const moveTag = (item: any) => {
   const { left, right } = container.value.$el.getBoundingClientRect();
@@ -83,6 +109,7 @@ const leftMove = () => {
 const rightMove = () => {
   const el = document.getElementById(`tags-${tags.value[tags.value.length - 1].key}`);
   const containerRight = container.value.$el.getBoundingClientRect().right;
+  console.log(el!.getBoundingClientRect().right, containerRight);
   if (el!.getBoundingClientRect().right > containerRight) {
     for (let valueElement of tags.value) {
       const testEL = document.getElementById(`tags-${valueElement.key}`);
@@ -108,15 +135,14 @@ const rightMove = () => {
       </n-button>
       <n-flex ref="container" :wrap="false" class="flex overflow-hidden w-full scroll-smooth">
         <vue-draggable v-model="tags" mode="list" class="flex gap8px" :animation="150" chosenClass="shadow">
-          <n-tag :id="`tags-${item.key}`" class="tag-item" v-for="item in tags" :key="item.key" closable
+          <n-tag :id="`tags-${item.key}`" class="tag-item" v-for="item in tags" :key="item.key"
+                 :closable="item.to != '/'"
                  rounded
-                 @close="closeTag"
-                 @click="clickTag(item)" :type=" item.checked ? 'primary' : 'default'">
-            <template #avatar>
-              <icon icon="ri:alibaba-cloud-fill" />
-            </template>
+                 @close="closeTag(item)"
+                 @click="clickTag(item)"
+                 :type=" item.checked ? 'primary' : 'default'">
             <n-flex align="center" :wrap="false">
-              <span>{{ item.name }}</span>
+              <span>{{ item.label }}</span>
             </n-flex>
           </n-tag>
         </vue-draggable>

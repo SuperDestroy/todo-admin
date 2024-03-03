@@ -12,6 +12,11 @@ export const useThemeStore = defineStore('todo-theme', () => {
   const sideMenuCollapsed = ref(false);
   const fullScreen = ref(false);
   const darkMode = ref(false);
+  const themeOverrides = ref<any>({
+    common: {
+      primaryColor: '#18a058'
+    }
+  });
   return {
     headerHeight,
     tagsViewHeight,
@@ -22,7 +27,8 @@ export const useThemeStore = defineStore('todo-theme', () => {
     sideMenuCollapsedWidth,
     sideMenuCollapsed,
     fullScreen,
-    darkMode
+    darkMode,
+    themeOverrides
   };
 }, {
   persist: {

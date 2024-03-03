@@ -8,9 +8,9 @@ const back = () => {
 </script>
 
 <template>
-  <n-layout>
+  <n-layout h-full w-full>
     <n-layout-content>
-      <n-flex justify="center" align="center" h-100vh w-100vw>
+      <n-flex justify="center" align="center">
         <n-result
           status="500"
           title="500 服务器错误"

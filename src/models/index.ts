@@ -1,7 +1,11 @@
-interface TagsModel {
+interface TagModel {
   key: string;
   label: string;
   to: string;
+  checked: boolean;
+  closeable: boolean,
+  default: boolean,
 
-  [key: string]: string;
+  [key: string]: any;
+
 }

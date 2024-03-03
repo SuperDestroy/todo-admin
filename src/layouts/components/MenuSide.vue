@@ -1,16 +1,19 @@
 <script setup lang="ts">
+import MenuSideLogo from '@/layouts/components/MenuSideLogo.vue';
 import { type MenuOption, NIcon, NLayoutSider } from 'naive-ui';
 import { useThemeStore } from '@/stores/theme';
 import { storeToRefs } from 'pinia';
-import MenuSideLogo from '@/layouts/components/MenuSideLogo.vue';
 import { computed, h } from 'vue';
 import { nanoid } from 'nanoid';
 import { Icon } from '@iconify/vue';
 import { RouterLink } from 'vue-router';
+import { useAppDataStore } from '@/stores/appData';
+
 
 const { sideMenuWidth, sideMenuCollapsed, headerHeight, sideMenuCollapsedWidth } = storeToRefs(useThemeStore());
+const { addTag } = useAppDataStore();
 const menuOptions: MenuOption[] = [{
-  key: nanoid(),
+  key: 0,
   label: '首页',
   iconString: 'carbon:home',
   to: '/',
@@ -121,6 +124,20 @@ const renderMenuLabel = (option: MenuOption) => {
     style: 'font-weight: 500; font-size: 1em'
   }, option.label as string);
 };
+
+const onChecked = (key: string, item: MenuOption) => {
+  if ('to' in item) {
+    addTag({
+      key: key,
+      label: item.label as string,
+      to: item.to as string,
+      checked: false,
+      default: true,
+      closeable: item.key == '0',
+      iconString: item.iconString
+    });
+  }
+};
 </script>
 
 <template>
@@ -140,6 +157,7 @@ const renderMenuLabel = (option: MenuOption) => {
         :indent="18"
         :render-icon="renderMenuIcon"
         :render-label="renderMenuLabel"
+        @update:value="onChecked"
       />
     </n-scrollbar>
   </n-layout-sider>

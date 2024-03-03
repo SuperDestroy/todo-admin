@@ -10,7 +10,7 @@ const back = () => {
 <template>
   <n-layout>
     <n-layout-content>
-      <n-flex justify="center" align="center" h-100vh w-100vw>
+      <n-flex justify="center" align="center" h-full w-full>
         <n-result status="404" title="404 资源不存在" description="生活总归带点荒谬">
           <template v-slot:footer>
             <n-button @click="back">返回首页</n-button>

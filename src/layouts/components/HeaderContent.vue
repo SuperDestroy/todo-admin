@@ -3,8 +3,9 @@ import { NButton, NFlex, NLayoutHeader } from 'naive-ui';
 import { Icon } from '@iconify/vue';
 import { useThemeStore } from '@/stores/theme';
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useFullscreen, useToggle } from '@vueuse/core';
+import ThemeDrawer from '@/layouts/components/ThemeDrawer.vue';
 
 
 const { headerHeight, sideMenuCollapsed, darkMode } = storeToRefs(useThemeStore());
@@ -14,6 +15,8 @@ const height = computed(() => {
 const sideMenuCollapsedToggle = useToggle(sideMenuCollapsed);
 const { isFullscreen, toggle } = useFullscreen();
 const darkModeToggle = useToggle(darkMode);
+const showTheme = ref(false);
+
 </script>
 
 <template>
@@ -39,6 +42,11 @@ const darkModeToggle = useToggle(darkMode);
             <icon v-else icon="material-symbols:light-mode-outline" />
           </template>
         </n-button>
+        <n-button @click="showTheme = true" quaternary :focusable="false">
+          <template v-slot:icon>
+            <icon icon="ic:outline-microwave" />
+          </template>
+        </n-button>
         <n-button quaternary :focusable="false">
           <template v-slot:icon>
             <icon icon="material-symbols:account-circle-outline" />
@@ -50,6 +58,11 @@ const darkModeToggle = useToggle(darkMode);
       </n-button-group>
     </n-flex>
   </n-layout-header>
+  <n-drawer v-model:show="showTheme" :width="365">
+    <n-drawer-content title="主题设置" closable>
+      <theme-drawer />
+    </n-drawer-content>
+  </n-drawer>
 </template>
 
 <style lang="scss" scoped>
