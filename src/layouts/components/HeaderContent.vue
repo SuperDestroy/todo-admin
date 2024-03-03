@@ -6,6 +6,8 @@ import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { useFullscreen, useToggle } from '@vueuse/core';
 import ThemeDrawer from '@/layouts/components/ThemeDrawer.vue';
+import { useTokenStore } from '@/stores/token';
+import { useRouter } from 'vue-router';
 
 
 const { headerHeight, sideMenuCollapsed, darkMode } = storeToRefs(useThemeStore());
@@ -16,6 +18,20 @@ const sideMenuCollapsedToggle = useToggle(sideMenuCollapsed);
 const { isFullscreen, toggle } = useFullscreen();
 const darkModeToggle = useToggle(darkMode);
 const showTheme = ref(false);
+const tokenStore = useTokenStore();
+const router = useRouter();
+
+const options = [
+  {
+    label: '退出登录',
+    key: 'logout'
+  }
+];
+
+const optionSelect = (key: string) => {
+  tokenStore.token = '';
+  router.replace('/login');
+};
 
 </script>
 
@@ -47,14 +63,16 @@ const showTheme = ref(false);
             <icon icon="ic:outline-microwave" />
           </template>
         </n-button>
-        <n-button quaternary :focusable="false">
-          <template v-slot:icon>
-            <icon icon="material-symbols:account-circle-outline" />
-          </template>
-          <template v-slot:default>
-            TodoX
-          </template>
-        </n-button>
+        <n-dropdown trigger="hover" :options="options" @select="optionSelect">
+          <n-button quaternary :focusable="false">
+            <template v-slot:icon>
+              <icon icon="material-symbols:account-circle-outline" />
+            </template>
+            <template v-slot:default>
+              TodoX
+            </template>
+          </n-button>
+        </n-dropdown>
       </n-button-group>
     </n-flex>
   </n-layout-header>
