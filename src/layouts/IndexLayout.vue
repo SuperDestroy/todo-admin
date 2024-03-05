@@ -7,8 +7,19 @@ import HeaderContent from '@/layouts/components/HeaderContent.vue';
 import { useThemeStore } from '@/stores/theme';
 import { storeToRefs } from 'pinia';
 import TagsView from '@/layouts/components/TagsView.vue';
+import { onMounted, ref } from 'vue';
+import { useFullscreen } from '@vueuse/core';
+import eventBus from '@/utils/EventBus';
 
 const { showFooter, showTagsView } = storeToRefs(useThemeStore());
+const contentRef = ref();
+const { isFullscreen, toggle } = useFullscreen(contentRef);
+
+onMounted(() => {
+  eventBus.on('FullScreenContent', () => {
+    toggle();
+  });
+});
 </script>
 
 <template>
@@ -16,9 +27,11 @@ const { showFooter, showTagsView } = storeToRefs(useThemeStore());
     <menu-side />
     <n-layout>
       <header-content />
-      <tags-view v-if="showTagsView" />
-      <main-content />
-      <footer-content v-if="showFooter" />
+      <div ref="contentRef">
+        <tags-view v-if="showTagsView" :is-full-screen="isFullscreen" />
+        <main-content />
+        <footer-content v-if="showFooter" />
+      </div>
     </n-layout>
   </n-layout>
 </template>

@@ -8,6 +8,7 @@ import { useFullscreen, useToggle } from '@vueuse/core';
 import ThemeDrawer from '@/layouts/components/ThemeDrawer.vue';
 import { useTokenStore } from '@/stores/token';
 import { useRouter } from 'vue-router';
+import { useAppDataStore } from '@/stores/appData';
 
 
 const { headerHeight, sideMenuCollapsed, darkMode } = storeToRefs(useThemeStore());
@@ -20,6 +21,7 @@ const darkModeToggle = useToggle(darkMode);
 const showTheme = ref(false);
 const tokenStore = useTokenStore();
 const router = useRouter();
+const appDataStore = useAppDataStore();
 
 const options = [
   {
@@ -30,7 +32,12 @@ const options = [
 
 const optionSelect = (key: string) => {
   tokenStore.token = '';
+  appDataStore.tags = [];
   router.replace('/login');
+};
+
+const gitHub = () => {
+  window.open('https://github.com/SuperDestroy/todo-admin');
 };
 
 </script>
@@ -40,8 +47,8 @@ const optionSelect = (key: string) => {
     <n-flex align="center" justify="space-evenly" class="h-full">
       <n-button @click="sideMenuCollapsedToggle()" quaternary :focusable="false">
         <template v-slot:icon>
-          <icon v-if="sideMenuCollapsed" icon="material-symbols:format-indent-increase" />
-          <icon v-else icon="material-symbols:format-indent-decrease" />
+          <icon v-if="sideMenuCollapsed" icon="zondicons:indent-increase" />
+          <icon v-else icon="zondicons:indent-decrease" />
         </template>
       </n-button>
       <div grow></div>
@@ -61,6 +68,11 @@ const optionSelect = (key: string) => {
         <n-button @click="showTheme = true" quaternary :focusable="false">
           <template v-slot:icon>
             <icon icon="ic:outline-microwave" />
+          </template>
+        </n-button>
+        <n-button @click="gitHub" quaternary :focusable="false">
+          <template v-slot:icon>
+            <icon icon="mdi:github" />
           </template>
         </n-button>
         <n-dropdown trigger="hover" :options="options" @select="optionSelect">

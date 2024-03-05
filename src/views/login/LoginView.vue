@@ -65,7 +65,7 @@ const themeVars = useThemeVars();
   width: 100vw;
   justify-content: center;
   align-items: center;
-  background: url("src/assets/login/bg.png") no-repeat;
+  background: url("@/assets/login/bg.png") no-repeat;
   background-size: cover;
 }
 

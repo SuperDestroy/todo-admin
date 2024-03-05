@@ -1,17 +1,28 @@
 <script setup lang="ts">
 import { NLayoutContent } from 'naive-ui';
-import { computed, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useThemeStore } from '@/stores/theme';
 import { storeToRefs } from 'pinia';
+import eventBus from '@/utils/EventBus';
 
 const { headerHeight, footerHeight, showFooter, tagsViewHeight, showTagsView, darkMode } = storeToRefs(useThemeStore());
 const contentRef = ref();
 const darkModeBg = computed(() => {
   return !darkMode.value;
 });
+const routerViewActive = ref(true);
 
 const height = computed(() => {
   return `calc(100vh - ${headerHeight.value}px - ${showFooter.value ? footerHeight.value : 0}px -  ${showTagsView.value ? tagsViewHeight.value : 0}px)`;
+});
+
+onMounted(() => {
+  eventBus.on('RefreshContent', () => {
+    routerViewActive.value = false;
+    nextTick(() => {
+      routerViewActive.value = true;
+    });
+  });
 });
 
 </script>
@@ -19,7 +30,7 @@ const height = computed(() => {
 <template>
   <n-layout-content ref="contentRef" class="content" :class="{ 'bg-slate-50': darkModeBg }"
                     content-style="padding: 10px;">
-    <router-view v-slot="{ Component, route }">
+    <router-view v-slot="{ Component, route }" v-if="routerViewActive">
       <transition name="router_animate" mode="out-in" appear>
         <keep-alive>
           <component :is="Component" :key="route.fullPath" />

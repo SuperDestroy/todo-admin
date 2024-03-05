@@ -3,8 +3,9 @@ import { ref } from 'vue';
 
 export const useThemeStore = defineStore('todo-theme', () => {
   const headerHeight = ref(60);
-  const tagsViewHeight = ref(40);
+  const tagsViewHeight = ref(46);
   const showTagsView = ref(true);
+  const showTagIcon = ref(true);
   const footerHeight = ref(42);
   const showFooter = ref(true);
   const sideMenuWidth = ref(256);
@@ -21,6 +22,7 @@ export const useThemeStore = defineStore('todo-theme', () => {
     headerHeight,
     tagsViewHeight,
     showTagsView,
+    showTagIcon,
     footerHeight,
     showFooter,
     sideMenuWidth,

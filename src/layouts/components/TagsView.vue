@@ -8,12 +8,22 @@ import { useThemeStore } from '@/stores/theme';
 import { storeToRefs } from 'pinia';
 import { useAppDataStore } from '@/stores/appData';
 import { useRouter } from 'vue-router';
+import { type TagModel } from '@/models';
+import eventBus from '@/utils/EventBus';
+import { NButton } from 'naive-ui';
+
+withDefaults(defineProps<{
+  isFullScreen: boolean
+}>(), {
+  isFullScreen: false
+});
+
 
 const container = ref();
 const overflow = ref(false);
-const { tagsViewHeight } = storeToRefs(useThemeStore());
+const { tagsViewHeight, showTagIcon } = storeToRefs(useThemeStore());
 const appDataStore = useAppDataStore();
-const { tags, activeTag } = storeToRefs(appDataStore);
+const { tags, activeTag, defaultMenus } = storeToRefs(appDataStore);
 const { removeTag, checkTag } = appDataStore;
 const router = useRouter();
 
@@ -33,15 +43,23 @@ const updateOverflow = () => {
 const init = () => {
   if (container.value != null) {
     if (tags.value.length == 0) {
-      tags.value.push({
-        key: '0',
-        label: '首页',
-        to: '/',
-        checked: true,
-        default: true,
-        closeable: false
+      defaultMenus.value.forEach(item => {
+        tags.value.push({
+          id: item.id,
+          label: item.name,
+          to: item.to,
+          checked: false,
+          default: item.default,
+          closeable: !item.default,
+          icon: item.iconStr
+        });
       });
-      checkTag(tags.value[0]);
+      if (activeTag.value.id.length > 0 && !activeTag.value.default) {
+        tags.value.push(activeTag.value);
+      }
+      if (tags.value.length > 0) {
+        checkTag(tags.value[tags.value.length - 1]);
+      }
     }
   }
 };
@@ -80,7 +98,7 @@ watch(activeTag, (value: TagModel) => {
 
 const moveTag = (item: any) => {
   const { left, right } = container.value.$el.getBoundingClientRect();
-  const { left: tagLeft, right: tagRight } = document.getElementById(`tags-${item.key}`)!.getBoundingClientRect();
+  const { left: tagLeft, right: tagRight } = document.getElementById(`tags-${item.id}`)!.getBoundingClientRect();
   const moveLeft = (left - tagLeft);
   const moveRight = (tagRight - right);
   if (Math.abs(moveLeft) < Math.abs(moveRight) && moveLeft > 0) {
@@ -96,7 +114,7 @@ const leftMove = () => {
     const containerLeft = container.value.$el.getBoundingClientRect().left;
     const cloneTags = cloneDeep(tags.value).reverse();
     for (let valueElement of cloneTags) {
-      const testEL = document.getElementById(`tags-${valueElement.key}`);
+      const testEL = document.getElementById(`tags-${valueElement.id}`);
       const testElLeft = testEL?.getBoundingClientRect().left;
       if (testElLeft! < containerLeft) {
         container.value.$el.scrollTo(container.value.$el.scrollLeft - (containerLeft - testElLeft!), 0);
@@ -107,12 +125,11 @@ const leftMove = () => {
 };
 
 const rightMove = () => {
-  const el = document.getElementById(`tags-${tags.value[tags.value.length - 1].key}`);
+  const el = document.getElementById(`tags-${tags.value[tags.value.length - 1].id}`);
   const containerRight = container.value.$el.getBoundingClientRect().right;
-  console.log(el!.getBoundingClientRect().right, containerRight);
   if (el!.getBoundingClientRect().right > containerRight) {
     for (let valueElement of tags.value) {
-      const testEL = document.getElementById(`tags-${valueElement.key}`);
+      const testEL = document.getElementById(`tags-${valueElement.id}`);
       const testElRight = testEL?.getBoundingClientRect().right;
       if ((testElRight! - containerRight) > 1) {
         container.value.$el.scrollTo(container.value.$el.scrollLeft + (testElRight! - containerRight), 0);
@@ -122,6 +139,13 @@ const rightMove = () => {
   }
 };
 
+const refresh = () => {
+  eventBus.emit('RefreshContent');
+};
+
+const fullScreen = () => {
+  eventBus.emit('FullScreenContent');
+};
 
 </script>
 
@@ -133,14 +157,17 @@ const rightMove = () => {
           <icon icon="mdi:chevron-left" />
         </template>
       </n-button>
-      <n-flex ref="container" :wrap="false" class="flex overflow-hidden w-full scroll-smooth">
+      <n-flex ref="container" :wrap="false" class="flex overflow-hidden w-full scroll-smooth items-center">
         <vue-draggable v-model="tags" mode="list" class="flex gap8px" :animation="150" chosenClass="shadow">
-          <n-tag :id="`tags-${item.key}`" class="tag-item" v-for="item in tags" :key="item.key"
-                 :closable="item.to != '/'"
+          <n-tag :id="`tags-${item.id}`" class="tag-item" v-for="item in tags" :key="item.key"
+                 :closable="!item.default"
                  rounded
                  @close="closeTag(item)"
                  @click="clickTag(item)"
                  :type=" item.checked ? 'primary' : 'default'">
+            <template v-if="showTagIcon" #icon>
+              <icon :icon="item.icon" />
+            </template>
             <n-flex align="center" :wrap="false">
               <span>{{ item.label }}</span>
             </n-flex>
@@ -150,6 +177,17 @@ const rightMove = () => {
       <n-button v-if="overflow" class="ml8px" text @click="rightMove">
         <template v-slot:icon>
           <icon icon="mdi:chevron-right" />
+        </template>
+      </n-button>
+      <n-button @click="refresh" quaternary :focusable="false">
+        <template v-slot:icon>
+          <icon icon="ic:baseline-refresh" />
+        </template>
+      </n-button>
+      <n-button @click="fullScreen" quaternary :focusable="false">
+        <template v-slot:icon>
+          <icon v-if="isFullScreen" icon="material-symbols:fullscreen-exit" />
+          <icon v-else icon="material-symbols:fullscreen" />
         </template>
       </n-button>
     </div>
@@ -163,5 +201,6 @@ const rightMove = () => {
 
 .tag-item {
   cursor: pointer;
+  height: 34px;
 }
 </style>

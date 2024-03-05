@@ -1,21 +1,28 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { findIndex, remove } from 'lodash';
+import { type TagModel, type MenuModel } from '@/models';
+import { menu } from '@/data/data';
 
 export const useAppDataStore = defineStore('todo-app-data', () => {
   const tags = ref<TagModel[]>([]);
   const activeTag = ref<TagModel>({
-    key: '',
+    id: '',
     label: '',
     to: '',
     checked: false,
     closeable: false,
-    default: false
+    default: false,
+    icon: ''
+  });
+  const menus = ref<any[]>(menu);
+  const defaultMenus = computed(() => {
+    return menus.value.filter(item => item!.default == true) as MenuModel[];
   });
 
   function addTag(tag: TagModel) {
     if (findIndex(tags.value, function(o: TagModel) {
-      return o.key == tag.key;
+      return o.id == tag.id;
     }) == -1) {
       tags.value.push(tag);
     }
@@ -24,7 +31,7 @@ export const useAppDataStore = defineStore('todo-app-data', () => {
 
   function removeTag(tag: TagModel) {
     remove(tags.value, function(o: TagModel) {
-      return o.key == tag.key;
+      return o.id == tag.id;
     });
     if (tag.checked) {
       if (tags.value.length > 0) {
@@ -34,8 +41,9 @@ export const useAppDataStore = defineStore('todo-app-data', () => {
   }
 
   function checkTag(tag: TagModel) {
+    if (tag == undefined) return;
     tags.value.forEach(function(o: TagModel) {
-      if (o.key == tag.key) {
+      if (o.id == tag.id) {
         o.checked = true;
         activeTag.value = tag;
       } else {
@@ -51,7 +59,14 @@ export const useAppDataStore = defineStore('todo-app-data', () => {
     activeTag,
     addTag,
     removeTag,
-    checkTag
+    checkTag,
+    menus,
+    defaultMenus
   };
 
+}, {
+  persist: {
+    paths: ['activeTag'],
+    storage: localStorage
+  }
 });
