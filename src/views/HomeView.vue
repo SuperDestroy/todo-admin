@@ -30,6 +30,7 @@ import { Icon } from '@iconify/vue';
         </n-statistic>
         <n-divider />
         <n-timeline>
+          <n-timeline-item content="增加标签页的右键操作" time="2024/3/5, 23:59" />
           <n-timeline-item content="增加主题配置项" time="2024/3/5, 17:24" />
           <n-timeline-item content="优化界面，调整存在的BUG" time="2024/3/5, 14:35" />
           <n-timeline-item content="增加登录界面" time="2024/3/3, 22:00" />

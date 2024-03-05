@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, h, nextTick, onMounted, ref, watch } from 'vue';
 import { useResizeObserver } from '@vueuse/core';
 import { VueDraggable } from 'vue-draggable-plus';
 import { cloneDeep } from 'lodash';
@@ -10,7 +10,7 @@ import { useAppDataStore } from '@/stores/appData';
 import { useRouter } from 'vue-router';
 import { type TagModel } from '@/models';
 import eventBus from '@/utils/EventBus';
-import { NButton } from 'naive-ui';
+import { NButton, NIcon } from 'naive-ui';
 
 withDefaults(defineProps<{
   isFullScreen: boolean
@@ -147,6 +147,104 @@ const fullScreen = () => {
   eventBus.emit('FullScreenContent');
 };
 
+const showDropdownRef = ref(false);
+let showMenuItem: TagModel;
+const xRef = ref(0);
+const yRef = ref(0);
+const options = [
+  {
+    label: '关闭',
+    key: 'me',
+    disabled: false,
+    iconStr: 'material-symbols:close-small-outline-rounded'
+  },
+  {
+    label: '关闭其他',
+    key: 'other',
+    disabled: false,
+    iconStr: 'material-symbols:check-indeterminate-small'
+  },
+  {
+    label: '关闭左侧',
+    key: 'left',
+    disabled: false,
+    iconStr: 'material-symbols-light:align-horizontal-left-rounded'
+  },
+  {
+    label: '关闭右侧',
+    key: 'right',
+    disabled: false,
+    iconStr: 'material-symbols-light:align-horizontal-right-rounded'
+  },
+  {
+    label: '关闭所有',
+    key: 'all',
+    disabled: false,
+    iconStr: 'material-symbols:clear-all'
+  }
+];
+const onContextMenu = (e: MouseEvent, item: TagModel) => {
+  showDropdownRef.value = false;
+  nextTick().then(() => {
+    showMenuItem = item;
+    options[0].disabled = item.default;
+    options[1].disabled = tags.value.length == 1;
+    options[2].disabled = item.id == tags.value[0].id;
+    options[3].disabled = item.id == tags.value[tags.value.length - 1].id;
+    options[4].disabled = tags.value.length == 1;
+    showDropdownRef.value = true;
+    xRef.value = e.clientX;
+    yRef.value = e.clientY;
+  });
+};
+
+const onClickOutSide = () => {
+  showDropdownRef.value = false;
+};
+
+const handleSelect = (key: string) => {
+  if (key == 'me') {
+    showDropdownRef.value = false;
+    nextTick(() => {
+      closeTag(showMenuItem);
+    });
+  } else if (key == 'other') {
+    showDropdownRef.value = false;
+    nextTick(() => {
+      const filter = tags.value.filter(item => !item.default && item.id != showMenuItem.id);
+      filter.forEach(item => {
+        closeTag(item);
+      });
+    });
+  } else if (key == 'all') {
+    showDropdownRef.value = false;
+    nextTick(() => {
+      const filter = tags.value.filter(item => !item.default);
+      filter.forEach(item => {
+        closeTag(item);
+      });
+    });
+  } else {
+    showDropdownRef.value = false;
+    nextTick(() => {
+      const cloneTags = cloneDeep(tags.value);
+      if (key == 'right') {
+        cloneTags.reverse();
+      }
+      for (let cloneTag of cloneTags) {
+        if (cloneTag.id == showMenuItem.id) break;
+        if (!cloneTag.default) {
+          closeTag(cloneTag);
+        }
+      }
+    });
+  }
+};
+
+const renderMenuIcon = (option: any) => {
+  return h(NIcon, null, () => h(Icon, { icon: option.iconStr }));
+};
+
 </script>
 
 <template>
@@ -164,7 +262,8 @@ const fullScreen = () => {
                  rounded
                  @close="closeTag(item)"
                  @click="clickTag(item)"
-                 :type=" item.checked ? 'primary' : 'default'">
+                 :type=" item.checked ? 'primary' : 'default'"
+                 @contextmenu.prevent="(e: MouseEvent) => onContextMenu(e,item)">
             <template v-if="showTagIcon" #icon>
               <icon :icon="item.icon" />
             </template>
@@ -191,6 +290,17 @@ const fullScreen = () => {
         </template>
       </n-button>
     </div>
+    <n-dropdown
+      placement="bottom-start"
+      trigger="manual"
+      :x="xRef"
+      :y="yRef"
+      :options="options"
+      :show="showDropdownRef"
+      :on-clickoutside="onClickOutSide"
+      :render-icon="renderMenuIcon"
+      @select="handleSelect"
+    />
   </n-layout-header>
 </template>
 
