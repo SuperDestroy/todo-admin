@@ -5,6 +5,8 @@ import { useRouter } from 'vue-router';
 import { useThemeVars } from 'naive-ui';
 import { useTokenStore } from '@/stores/token';
 import { nanoid } from 'nanoid';
+import { useAppDataStore } from '@/stores/appData';
+import { storeToRefs } from 'pinia';
 
 const loginRef = ref(null);
 const username = ref('admin');
@@ -13,11 +15,22 @@ const rememberMe = ref(false);
 const login = ref(false);
 const router = useRouter();
 const tokenStore = useTokenStore();
+const { tags, activeTag } = storeToRefs(useAppDataStore());
 
 const onLogin = _.debounce(() => {
   login.value = true;
   setTimeout(() => {
     login.value = false;
+    tags.value = [];
+    activeTag.value = {
+      id: '',
+      label: '',
+      to: '',
+      checked: false,
+      closeable: false,
+      default: false,
+      icon: ''
+    };
     tokenStore.token = nanoid();
     router.replace('/');
   }, 1500);

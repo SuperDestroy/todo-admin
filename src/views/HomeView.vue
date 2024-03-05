@@ -30,6 +30,7 @@ import { Icon } from '@iconify/vue';
         </n-statistic>
         <n-divider />
         <n-timeline>
+          <n-timeline-item content="优化界面，调整存在的BUG" time="2024/3/5, 14:35" />
           <n-timeline-item content="增加登录界面" time="2024/3/3, 22:00" />
           <n-timeline-item content="增加tagsView标签栏、增加主题设置功能" time="2024/3/3, 16:12" />
           <n-timeline-item content="增加异常演示页面" time="2024/2/28, 21:29" />
