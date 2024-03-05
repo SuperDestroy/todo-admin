@@ -7,31 +7,39 @@ import HeaderContent from '@/layouts/components/HeaderContent.vue';
 import { useThemeStore } from '@/stores/theme';
 import { storeToRefs } from 'pinia';
 import TagsView from '@/layouts/components/TagsView.vue';
-import { onMounted, ref } from 'vue';
-import { useFullscreen } from '@vueuse/core';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import eventBus from '@/utils/EventBus';
 
-const { showFooter, showTagsView } = storeToRefs(useThemeStore());
-const contentRef = ref();
-const { isFullscreen, toggle } = useFullscreen(contentRef);
+const { showHeader, showFooter, showTagsView } = storeToRefs(useThemeStore());
+const fullScreenContent = ref(false);
 
 onMounted(() => {
   eventBus.on('FullScreenContent', () => {
-    toggle();
+    fullScreenContent.value = true;
+    showHeader.value = false;
+  });
+  eventBus.on('ExitFullScreenContent', () => {
+    nextTick(() => {
+      fullScreenContent.value = false;
+      showHeader.value = true;
+    });
   });
 });
+
+const hasSide = computed(() => !fullScreenContent.value);
 </script>
 
 <template>
-  <n-layout has-sider class="h100vh w100vw">
-    <menu-side />
+  <n-layout :has-sider="hasSide" class="h100vh w100vw">
+    <menu-side v-if="hasSide" />
     <n-layout>
-      <header-content />
-      <div ref="contentRef">
-        <tags-view v-if="showTagsView" :is-full-screen="isFullscreen" />
-        <main-content />
-        <footer-content v-if="showFooter" />
-      </div>
+      <header-content v-if="showHeader" />
+      <tags-view v-if="showTagsView" />
+      <main-content />
+      <footer-content v-if="showFooter" />
     </n-layout>
   </n-layout>
 </template>
+
+<style lang="scss" scoped>
+</style>

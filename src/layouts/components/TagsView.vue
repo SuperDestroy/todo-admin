@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
 import { computed, h, nextTick, onMounted, ref, watch } from 'vue';
-import { useResizeObserver } from '@vueuse/core';
+import { useFullscreen, useResizeObserver } from '@vueuse/core';
 import { VueDraggable } from 'vue-draggable-plus';
 import { cloneDeep } from 'lodash';
 import { useThemeStore } from '@/stores/theme';
@@ -12,13 +12,6 @@ import { type TagModel } from '@/models';
 import eventBus from '@/utils/EventBus';
 import { NButton, NIcon } from 'naive-ui';
 
-withDefaults(defineProps<{
-  isFullScreen: boolean
-}>(), {
-  isFullScreen: false
-});
-
-
 const container = ref();
 const overflow = ref(false);
 const { tagsViewHeight, showTagIcon } = storeToRefs(useThemeStore());
@@ -26,6 +19,9 @@ const appDataStore = useAppDataStore();
 const { tags, activeTag, defaultMenus } = storeToRefs(appDataStore);
 const { removeTag, checkTag } = appDataStore;
 const router = useRouter();
+const fullScreenContent = ref(false);
+const { isFullscreen } = useFullscreen();
+const showFullScreen = computed(() => !isFullscreen.value);
 
 const height = computed(() => {
   return `${tagsViewHeight.value}px`;
@@ -144,7 +140,13 @@ const refresh = () => {
 };
 
 const fullScreen = () => {
-  eventBus.emit('FullScreenContent');
+  if (fullScreenContent.value) {
+    fullScreenContent.value = false;
+    eventBus.emit('ExitFullScreenContent');
+  } else {
+    fullScreenContent.value = true;
+    eventBus.emit('FullScreenContent');
+  }
 };
 
 const showDropdownRef = ref(false);
@@ -245,6 +247,12 @@ const renderMenuIcon = (option: any) => {
   return h(NIcon, null, () => h(Icon, { icon: option.iconStr }));
 };
 
+onMounted(() => {
+  eventBus.on('FullScreenContent', () => {
+
+  });
+});
+
 </script>
 
 <template>
@@ -283,9 +291,9 @@ const renderMenuIcon = (option: any) => {
           <icon icon="ic:baseline-refresh" />
         </template>
       </n-button>
-      <n-button @click="fullScreen" quaternary :focusable="false">
+      <n-button @click="fullScreen" v-if="showFullScreen" quaternary :focusable="false">
         <template v-slot:icon>
-          <icon v-if="isFullScreen" icon="material-symbols:fullscreen-exit" />
+          <icon v-if="fullScreenContent" icon="material-symbols:fullscreen-exit" />
           <icon v-else icon="material-symbols:fullscreen" />
         </template>
       </n-button>

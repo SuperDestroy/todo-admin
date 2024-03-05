@@ -5,7 +5,15 @@ import { useThemeStore } from '@/stores/theme';
 import { storeToRefs } from 'pinia';
 import eventBus from '@/utils/EventBus';
 
-const { headerHeight, footerHeight, showFooter, tagsViewHeight, showTagsView, darkMode } = storeToRefs(useThemeStore());
+const {
+  headerHeight,
+  showHeader,
+  footerHeight,
+  showFooter,
+  tagsViewHeight,
+  showTagsView,
+  darkMode
+} = storeToRefs(useThemeStore());
 const contentRef = ref();
 const darkModeBg = computed(() => {
   return !darkMode.value;
@@ -13,7 +21,7 @@ const darkModeBg = computed(() => {
 const routerViewActive = ref(true);
 
 const height = computed(() => {
-  return `calc(100vh - ${headerHeight.value}px - ${showFooter.value ? footerHeight.value : 0}px -  ${showTagsView.value ? tagsViewHeight.value : 0}px)`;
+  return `calc(100vh - ${showHeader.value ? headerHeight.value : 0}px - ${showFooter.value ? footerHeight.value : 0}px - ${showTagsView.value ? tagsViewHeight.value : 0}px)`;
 });
 
 onMounted(() => {

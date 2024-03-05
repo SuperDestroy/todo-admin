@@ -30,6 +30,7 @@ import { Icon } from '@iconify/vue';
         </n-statistic>
         <n-divider />
         <n-timeline>
+          <n-timeline-item content="修正中心内容全屏BUG" time="2024/3/6, 01:01" />
           <n-timeline-item content="增加标签页的右键操作" time="2024/3/5, 23:59" />
           <n-timeline-item content="增加主题配置项" time="2024/3/5, 17:24" />
           <n-timeline-item content="优化界面，调整存在的BUG" time="2024/3/5, 14:35" />
